@@ -1,0 +1,71 @@
+
+  @keyframes border-tour {
+    0% {
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+    }
+    25% {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+    }
+    26% {
+      width: 2px;
+      height: 0;
+      top: 0;
+      left: 100%;
+    }
+    50% {
+      height: 100%;
+      top: 0;
+      left: 100%;
+    }
+    51% {
+      width: 0;
+      height: 2px;
+      top: 100%;
+      left: 100%;
+    }
+    75% {
+      width: 100%;
+      left: 0;
+      top: 100%;
+    }
+    76% {
+      width: 2px;
+      height: 0;
+      left: 0;
+      top: 100%;
+    }
+    100% {
+      width: 2px;
+      height: 5em;
+      top: 0;
+      left: 0;
+    }
+    }
+   .animated-border {
+        position: static;
+        top: 0;
+        width: -moz-max-content;
+        width: max-content;
+        height: 100%;
+        pointer-events: none;
+      }
+    .animated-border::before {
+        content: "";
+        position: absolute;
+        width: 80%;
+        height: 2px;
+        background-image: linear-gradient(to left, rgb(0, 89, 255), rgb(153, 0, 255));
+        background-size: 200% 100%;
+        animation: border-tour 10s linear infinite;
+      }
+    .card {
+     display : grid ;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }

@@ -1,3 +1,4 @@
+
 import { Nav } from "../../components/Nav/Nav";
 import useSWR from 'swr';
 import { Projets } from "../Projets/Projets";
@@ -14,9 +15,27 @@ const fetcher = (url) =>
     }).then((res) => res.json());
   
   const { data, error } = useSWR(`https://api.github.com/users/aurel1313/repos`, fetcher);
-  //const {data : contentRepo, error: errorContent} = useSWR(`https://api.github.com/repos/aurel1313/${data?.name}/contents`, fetcher);
- // recuperer contenu de chaque repo avec useSWR
-   
+ // const {data : contentRepo, error: errorContent} = useSWR(`https://api.github.com/repos/aurel1313/${data?.name}/contents`, fetcher);
+
+
+//filtrer data qui contient contents//
+  const filteredData = data?.filter((repo) => repo.contents_url !== undefined);
+ 
+  const contentRepo = filteredData?.map((repo) => {
+    return fetch(`https://api.github.com/repos/aurel1313/${repo?.name}/contents`, {
+      headers: {
+        Authorization: `token ${token}`,
+      },
+    })
+    //si contenu existe on le retourne sinon on retourne un tableau vide
+    .then((res) => res.json())
+    .then((data) => {
+    return data.length > 0 ? data : [];
+    })
+  
+
+
+  });
 
   if (error) return <div>Erreur : {error.message}</div>;
   return (
@@ -30,7 +49,7 @@ const fetcher = (url) =>
           Mon portfolio
         </h1>
       </div>
-      <div className="container mx-auto px-4 py-8" id="about" data-aos="fade-down">
+      <div className="container mx-auto px-4 py-8 text-white" id="about" data-aos="fade-down">
         <h2 className="text-3xl font-bold mb-4">À propos de moi</h2>
 
         <p
@@ -45,7 +64,7 @@ const fetcher = (url) =>
       </div>
       <div
         id="projects"
-        className="container mx-auto px-4 py-8"
+        className="container mx-auto px-4 py-8 text-white"
         data-aos="fade-down"
       >
         <h2 className="text-3xl font-bold mb-4">Mes Projets</h2>
@@ -54,7 +73,7 @@ const fetcher = (url) =>
           id="cards"
         ></div>
       </div>
-      <Projets data={data} error={error} content={contentRepo} />
+      <Projets data={data}  content={contentRepo} />
     </div>
   );
 };
