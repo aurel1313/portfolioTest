@@ -1,9 +1,11 @@
 import './Card.css';
 import useSWR from 'swr';
 import img from '../../assets/img.jpeg'
+import { useState } from 'react';
+import { Modal } from '../Modal/Modal';
 export const Card = ({ repo }) => {
   if (!repo) return null;
-
+  const[click,setClick] = useState(false)
   const token = import.meta.env.VITE_TOKEN_GITHUB;
   const fetcher = (url) =>
     fetch(url, {
@@ -25,9 +27,9 @@ export const Card = ({ repo }) => {
     )
   : null;
     const imageUrl = previewImage ? previewImage.download_url : img;
-    console.log(imageUrl);
+    console.log(repo.id);
   return (
-    <div className={`card ${error ? 'error' : ''}  text-white rounded rounded-md`}  style={{
+    <div className={`card ${error ? 'error' : ''} text-white rounded rounded-md`} id={repo.id}  style={{
         backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -41,28 +43,15 @@ export const Card = ({ repo }) => {
           Date created: {new Date(repo.created_at).toLocaleDateString()}
         </p>
 
-        <a
-          href={repo.html_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="card-link"
-        >
-          View on GitHub
-        </a>
+    <button className="card-button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={()=>setClick(true)} >
+        Details
+        </button>
+        {click && (
+           <Modal repo={repo}  contents={contents} id={parseInt(repo.id)} onClose={()=>setClick(false)}  /> 
+        )}
 
-        {/* ✅ Affiche tous les fichiers du repo */}
-        {/*Array.isArray(contents) && contents.length > 0 && (
-          <div className="card-files">
-            <h3>Fichiers :</h3>
-            <ul>
-              {contents.map((file) => (
-                <li key={file.path}>
-                  {file.type === 'file' ? '📄' : '📁'} {file.name}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )*/}
+
+     
      
     </div>
   );
